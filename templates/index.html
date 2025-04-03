@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Market Analyzer</title>
+    <link rel="stylesheet" href="static/styles.css">
+    <script>
+        function startScraping() {
+            fetch('/api/cryptos/fetch')
+                .then(response => response.json())
+                .then(data => alert(data.message))
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Crypto Market Data Analyzer</h1>
+        <div class="actions">
+            <button class="btn" onclick="startScraping()">Fetch Latest Data</button>
+            <form class="search-form" action="/api/cryptos/search" method="get">
+                <label for="symbol">Search Symbol:</label>
+                <input type="text" id="symbol" name="symbol" placeholder="Enter Crypto Symbol">
+                <button type="submit" class="btn">Search</button>
+            </form>
+        </div>
+        <div class="links">
+            <a href="/api/cryptos/sort?order=asc" class="link">Sort by Price (Ascending)</a>
+            <a href="/api/cryptos/sort?order=desc" class="link">Sort by Price (Descending)</a>
+            <a href="/api/cryptos/top-gainer-loser" class="link">Get Top Gainer and Loser</a>
+            <a href="/api/cryptos/download" class="link">Download CSV</a>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Symbol</th>
+                    <th>Price (USD)</th>
+                    <th>24h Change</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range .cryptos}}
+                <tr>
+                    <td>{{.Name}}</td>
+                    <td>{{.Symbol}}</td>
+                    <td>{{printf "%.2f" .Price}}</td>
+                    <td>{{.Change}}</td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
